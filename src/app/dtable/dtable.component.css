@@ -1,0 +1,38 @@
+table td{
+    font-family: Aktiv Grotesk Corp;
+    font-style: normal;
+    font-weight: normal;
+    font-size: 14px;
+    line-height: 120%;
+    color: #666666;
+}
+
+table thead tr:nth-child(1) th {
+    font-family: Aktiv Grotesk Corp;
+    font-size: 24px;
+    font-style: normal;
+    font-weight: 700;
+    line-height: 22px;
+    letter-spacing: 0em;
+    text-align: left;
+
+}
+
+table thead tr:nth-child(2) th {
+    font-family: Aktiv Grotesk Corp;
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 500;
+    line-height: 17px;
+    letter-spacing: 0em;
+    text-align: left;
+}
+
+tfoot tr th.table--pagination{
+    /* text-align: right; */
+}
+
+.flex-end{    
+    display: flex;
+    justify-content: flex-end;
+}

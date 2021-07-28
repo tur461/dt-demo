@@ -1,0 +1,40 @@
+div {
+    display: flex;
+    margin-right: 12rem;
+}
+
+div > span{
+    cursor: pointer;
+    opacity: .2;
+    width: 1.2rem;
+    background-repeat: no-repeat;
+}
+
+div span.prev-page--icon{
+    background-image: url(../icons/angle-left.svg) !important;
+}
+
+div span.next-page--icon{
+    background-image: url(../icons/angle-right.svg) !important;
+}
+
+div span.prev-page--icon:hover,
+div span.next-page--icon:hover {
+    opacity: 1;
+}
+
+div p span{
+    padding-left: .8rem;
+    padding-right: .8rem;
+    padding-top: .4rem;
+    padding-bottom: .4rem;
+    cursor: pointer;
+    margin-left: .2rem;
+    color: #c2c2c2;
+}
+
+div select{
+    margin-left: 1rem;
+    width: 3.2rem;
+    height: 1.6rem;
+}

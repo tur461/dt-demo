@@ -1,0 +1,40 @@
+div.super-users--container{
+    position: relative;
+    display: flex;
+    justify-content: space-between;
+    padding-left: .4rem;
+    padding-right: .4rem;
+}
+
+div.super-users--container > ul.super-users--other {
+    display: none;
+    position: absolute;
+    padding: .1rem;
+    background: rgba(0,0,0, .8);
+    border-radius: .3rem;
+    box-shadow: 0px 0px 4px 0px #c3c3c3;
+    color: #fff;
+    top: 1.2rem;
+    right: .8rem;
+    z-index: 50;
+}
+
+div.super-users--container > ul.super-users--other li > span {
+    font-size: .5rem;
+}
+
+div.super-users--container > ul.super-users--other li {
+    list-style: none;
+    display: flex;
+    justify-content: space-evenly;
+    padding: .1rem;
+}
+
+div.super-users--container > ul.super-users--other li span{
+    margin-left: .2rem;
+}
+
+div.super-users--container > *:nth-child(3):hover ~ ul.super-users--other {
+    display: flex;
+    flex-direction: column;
+} 

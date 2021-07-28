@@ -1,0 +1,12 @@
+<div>
+    <span class="prev-page--icon" (click)="pageNumberClick($event)"></span>
+    <p>
+        <span *ngFor="let pageNum of pageSeries" (click)="pageNumberClick($event)">{{pageNum}}</span>
+    </p>
+    <span class="next-page--icon" (click)="pageNumberClick($event)"></span>
+    <select >
+        <option value="0">10</option>
+        <option value="1">20</option>
+        <option value="2">30</option>
+    </select>
+</div>

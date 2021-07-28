@@ -1,0 +1,12 @@
+<div class="super-users--container">
+    
+    <span #abrv></span>
+    <span #name></span>
+    <span #count></span>
+    
+    <ul class="super-users--other">
+        <li *ngFor="let name of names">
+            <span>{{getAbrv(name)}}</span><span>{{name}}</span>
+        </li>
+    </ul>
+</div>

@@ -1,0 +1,32 @@
+div{
+    display: flex;
+    justify-content: space-between;
+    margin-right: 2rem;
+}
+
+div p{
+    display: inline-block;
+}
+
+div p > span {
+    display: inline-block;
+    margin-left: .4rem;
+    cursor: pointer;
+    opacity: .8;
+    width: 1.2rem;
+    background-repeat: no-repeat;
+    padding: .5rem;
+}
+
+div p span.export-excel--icon{
+    background-image: url(../icons/excel-export.svg);
+}
+
+div p span.export-csv--icon{
+    background-image: url(../icons/csv-export.svg);
+}
+
+div p span.export-excel--icon:hover,
+div p span.export-csv--icon:hover{
+    opacity: 1;
+}

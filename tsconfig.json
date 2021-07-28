@@ -8,6 +8,7 @@
     "strict": true,
     "noImplicitReturns": true,
     "noFallthroughCasesInSwitch": true,
+    "strictPropertyInitialization": false,
     "sourceMap": true,
     "declaration": false,
     "downlevelIteration": true,
@@ -19,7 +20,15 @@
     "lib": [
       "es2018",
       "dom"
-    ]
+    ],
+    "types": [
+      "jquery"
+    ],
+    "paths": {
+      "exceljs": [
+        "node_modules/exceljs/dist/exceljs.min"
+      ]
+    },
   },
   "angularCompilerOptions": {
     "enableI18nLegacyMessageIdFormat": false,

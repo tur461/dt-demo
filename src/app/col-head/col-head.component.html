@@ -1,0 +1,19 @@
+<div>
+    <span class="dtable--column_heading_text">
+        <ng-content></ng-content>
+    </span>
+    <i #sortIcon class="dtable--column_sort_icon" (click)="sort($event)"></i>
+    <span class="dtable--column_heading_menu" (click)="showMenu=!showMenu" ></span>
+    <ul class="dropdown-menu column-menu" #dd>
+        <li class="dropdown-item">Columns</li>
+        <li class="dropdown-item">Filter</li>
+        <ul class="dropdown-menu column-check-submenu">
+            <li class="dropdown-item">column 1</li>
+            <li class="dropdown-item">column 2</li>
+        </ul>
+        <ul class="dropdown-menu column-filter-submenu">
+            <li class="dropdown-item">filter 1</li>
+            <li class="dropdown-item">filter 2</li>
+        </ul>
+    </ul>
+</div>

@@ -1,0 +1,60 @@
+div{
+    display: flex;
+    justify-content: space-between;
+}
+
+div span.dtable--column_heading_text{
+    display:inline-block;
+    width: 128px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+div i.dtable--column_sort_icon {
+    cursor: pointer;
+    opacity: .2;
+    width: 1rem;
+    background-image: url(../icons/arrow-down-up.svg);
+    background-repeat: no-repeat;
+}
+
+
+.sort_asc {
+    cursor: pointer;
+    opacity: .2;
+    width: 1rem;
+    background-image: url(../icons/arrow-up.svg);
+    background-repeat: no-repeat;
+}
+
+.sort_desc {
+    cursor: pointer;
+    opacity: .2;
+    width: 1rem;
+    background-image: url(../icons/arrow-down.svg) !important;
+    background-repeat: no-repeat;
+}
+
+div i.dtable--column_sort_icon:hover,
+.sort_asc:hover,
+.sort_desc:hover {
+    opacity: 1;
+}
+
+span.dtable--column_heading_menu{
+    cursor: pointer;
+}
+
+span.dtable--column_heading_menu::after{
+    border: none !important;
+}
+
+span.dtable--column_heading_menu:after {
+    content: '\2807';
+    font-size: 1rem;
+}
+
+a{
+    text-decoration: none;
+}
