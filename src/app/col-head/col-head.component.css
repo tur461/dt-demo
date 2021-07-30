@@ -1,3 +1,12 @@
+ul li{
+    list-style: none;
+    background-color: #fff;
+}
+
+.show{
+    display: block !important;
+}
+
 div{
     display: flex;
     justify-content: space-between;
@@ -57,4 +66,45 @@ span.dtable--column_heading_menu:after {
 
 a{
     text-decoration: none;
+}
+
+div.div--column-menu,
+div.div--column-menu > ul > li{
+    position: relative;
+}
+
+div.div--column-menu > ul,
+div.div--column-menu > ul > li > ul{
+    display: none;
+    position: absolute;
+    z-index: 60;
+    background: #fff;
+}
+
+ul.column-menu--main{
+    top: 1rem;
+}
+
+li.main-menu-item,
+li.main-menu-item::after,
+li.main-menu-item::before {
+    cursor: pointer;
+}
+
+li.main-menu-item::after,
+li.main-menu-item::before {
+    opacity: .7;
+    content: "";
+    width: 80px;
+    height: 80px;
+    background-repeat: no-repeat;
+    background-size: 75% 40%;
+}
+
+li.main-menu-item.angle_on-before::before{
+    background-image: url(../icons/angle-left.svg) !important;
+}
+
+li.main-menu-item.angle_on-after::after{
+    background-image: url(../icons/angle-right.svg) !important;
 }

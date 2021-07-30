@@ -20,8 +20,6 @@ export class DtableComponent implements OnInit {
   @Input('rowsPerPage') rows: number;
 
   private names: string[];
-  private curIndex: number = 0;
-  private prevPageNum = 1;
   
   title = "Organizations";
   xl_extn = "xlsx";
@@ -50,12 +48,10 @@ export class DtableComponent implements OnInit {
     this.loading = !0;
     setTimeout(() => {
       this.airlineService.getAirlines().then(airlines => { 
-        // this.airlines = airlines;
+        this.rows = this.rows + 1;
         this.airlines_bkp = airlines;
-        this.airlines = airlines.slice(this.curIndex, this.rows);
+        this.airlines = airlines.slice(0, this.rows);
         this.cur_slice = <(IAirline_str & IAirline_arr)[]> this.clone(this.airlines);
-        // console.log('cur slice:', this.cur_slice)
-        this.curIndex = this.rows;
         this.initPagination();
       });
       this.loading = !1;
@@ -64,10 +60,12 @@ export class DtableComponent implements OnInit {
   }
 
   ngAfterViewInit() {
+    this.setupPerColumnSearching();
+  }
 
+  setupPerColumnSearching(){
     // column search feature implemented here
     $('input.table--filter-col_searchbox').on('keyup', (e: any) => {
-      //console.log(e.target.value)
       if(!e.target.value){
         this.airlines = this.cur_slice;
       }
@@ -75,7 +73,6 @@ export class DtableComponent implements OnInit {
       let colname = $(`.dtable--column_heading:nth-child(${e.target.id.split('_')[1]}) .dtable--column_heading_text`).html();
 
       let val = e.target.value.toLocaleLowerCase();
-      //debugger;
       this.airlines = this.airlines.filter(
         a => {
           let b = this.cols.filter(c => c.header === colname)[0].field, c = a[b];
@@ -83,8 +80,7 @@ export class DtableComponent implements OnInit {
             return c.find(cc => cc.toLocaleLowerCase().includes(val));
           return `${c}`.toLocaleLowerCase().includes(val);
         });
-      
-    })
+    });
   }
 
   sortByColumn(e: ISortEvent){
@@ -97,22 +93,31 @@ export class DtableComponent implements OnInit {
     })
   }
 
+  handleColCheck(e: any){
+    console.log('colCheckEvent:', e, 'cols:', this.cols);
+  
+    this.cols = this.cols.map(col => {
+      if(col.field === e.col_field)
+        return { ...col, show: e.show};
+      return col;
+    });
+    setTimeout(_ => {
+      console.log('after 5 sec, cols:', this.cols);
+    }, 5000);
+  }
+
   selectPage(pageNumber:number){
     console.log('page # selected:', pageNumber);
-    let s = 0, e = 0;
-    if(pageNumber < this.prevPageNum){
-      s = this.curIndex - this.rows * (this.prevPageNum);
-      e = this.rows * (this.prevPageNum-pageNumber);
-    }else{
-      s = this.curIndex;
-      e = this.rows * (pageNumber - 1) + this.curIndex
-    }
-    console.log(`pageNum: ${pageNumber} prvPageNum: ${this.prevPageNum} start: ${s} end: ${e}`);
-    this.airlines = this.airlines_bkp.slice(s, e);
+    // ensure in-range
+    pageNumber = pageNumber < 1 ? 
+    1 : pageNumber > this.pagination.total ? this.pagination.total : pageNumber;
+    
+    this.pagination.current_page = pageNumber;
+    this.pagination.from = this.from();
+    this.pagination.to = this.to();
+    console.log(`pageNum: ${pageNumber} start: ${this.pagination.from} end: ${this.pagination.to}`);
+    this.airlines = this.airlines_bkp.slice(this.pagination.from, this.pagination.to);
     this.cur_slice = <(IAirline_str & IAirline_arr)[]> this.clone(this.airlines);
-    // console.log('cur slice:', this.cur_slice);
-    this.curIndex = e;
-    this.prevPageNum = pageNumber;
   }
 
   handleExport(w: string){
@@ -121,7 +126,6 @@ export class DtableComponent implements OnInit {
   }
 
   private exportExcel() {
- 
     let workbook = new Workbook();
     let worksheet = workbook.addWorksheet(this.title);
     worksheet.columns = this.cols.map(c => {
@@ -131,12 +135,13 @@ export class DtableComponent implements OnInit {
       let aa: IAirline_arr & IAirline_arr = {};
       this.cols.forEach(c => aa[c.field] = a[c.field])
       worksheet.addRow(aa);
-    })
+    });
     workbook.xlsx.writeBuffer().then((data) => {
-      let blob = new Blob([data], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+      let blob = new Blob([data], { 
+        type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+      });
       fs.saveAs(blob, `${this.title}.${this.xl_extn}`);
-    })
-   
+    });
   }
 
   private exportCSV() {
@@ -145,12 +150,25 @@ export class DtableComponent implements OnInit {
    
   }
 
+  private lastPage(){
+    return Math.ceil(this.pagination.total / this.pagination.per_page);
+  }
+
+  private from(){
+    return ((this.pagination.current_page - 1) * this.pagination.per_page);
+  }
+
+  private to(){
+    return (this.pagination.current_page  * this.pagination.per_page) - 1;
+  }
+
   private initPagination(){
     this.pagination.total = this.airlines_bkp.length;
     this.pagination.per_page = this.rows;
     this.pagination.current_page = 1;
-    this.pagination.last_page = Math.ceil(this.pagination.total / this.pagination.per_page);
-    this.pagination.from = ((this.pagination.current_page - 1) * this.pagination.per_page) + 1;
+    this.pagination.last_page = this.lastPage();
+    this.pagination.from = this.from();
+    this.pagination.to = this.to();
   }
 
   isArray(val: any){
@@ -176,17 +194,14 @@ export class DtableComponent implements OnInit {
   clone(obj:any) {
     var copy: ICopy;
 
-    // Handle the 3 simple types, and null or undefined
     if (null == obj || "object" != typeof obj) return obj;
 
-    // Handle Date
     if (obj instanceof Date) {
         copy = new Date();
         copy.setTime(obj.getTime());
         return copy;
     }
 
-    // Handle Array
     if (obj instanceof Array) {
         copy = [];
         for (var i = 0, len = obj.length; i < len; i++) {
@@ -195,7 +210,6 @@ export class DtableComponent implements OnInit {
         return copy;
     }
 
-    // Handle Object
     if (obj instanceof Object) {
         copy = {};
         for (var attr in obj) {

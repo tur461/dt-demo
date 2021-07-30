@@ -7,7 +7,7 @@
     </tr>
     <tr>
         <th class="dtable--column_heading" *ngFor="let col of cols; let i=index">
-            <app-col-head [cols]="cols" [index]="i+1" (sortEvent)="sortByColumn($event)">{{col.header}}</app-col-head>
+            <app-col-head [cols]="column_checks_headings" [index]="i+1" (sortEvent)="sortByColumn($event)" (colCheckEvent)="handleColCheck($event)">{{col.header}}</app-col-head>
         </th>   
     </tr>
     <tr class="dtable--heading">
@@ -36,7 +36,7 @@
     <tfoot>
         <tr>
             <th [attr.colspan]="cols.length" class="table--pagination">
-                <app-paginator (pageChange)="selectPage($event)" [ngClass]="'flex-end'" [rowsPerPage]="1" [totalRecords]="airlines_bkp.length"></app-paginator>
+                <app-paginator (pageChange)="selectPage($event)" [ngClass]="'flex-end'" [rowsPerPage]="rows" [totalRecords]="airlines_bkp.length"></app-paginator>
             </th>
         </tr>
     </tfoot>

@@ -1,19 +1,36 @@
-<div>
+<div class="div--column-menu">
     <span class="dtable--column_heading_text">
         <ng-content></ng-content>
     </span>
     <i #sortIcon class="dtable--column_sort_icon" (click)="sort($event)"></i>
-    <span class="dtable--column_heading_menu" (click)="showMenu=!showMenu" ></span>
-    <ul class="dropdown-menu column-menu" #dd>
-        <li class="dropdown-item">Columns</li>
-        <li class="dropdown-item">Filter</li>
-        <ul class="dropdown-menu column-check-submenu">
-            <li class="dropdown-item">column 1</li>
-            <li class="dropdown-item">column 2</li>
-        </ul>
-        <ul class="dropdown-menu column-filter-submenu">
-            <li class="dropdown-item">filter 1</li>
-            <li class="dropdown-item">filter 2</li>
-        </ul>
+    <span [attr.id]="'dchm_'+col_num" class="dtable--column_heading_menu" (click)="toggleMenu($event)" ></span>
+    <ul [ngClass]="'column-menu_'+col_num" class="column-menu--main">
+        <li [ngClass]="'main-menu-item main-menu-item_'+col_num">
+            <span (mouseover)="showSubMenu($event)">Column</span>
+            <ul [ngClass]="'column-check-submenu_'+col_num" (mouseout)="hideSubMenu($event)">
+                <li>
+                    <input type="text" [ngClass]="'search-check-column_'+col_num" placeholder="search">
+                </li>
+                <li *ngFor="let col of cols; let i=index">
+                    <label [attr.for]="'col--check_'+col.field+'_'+i">
+                        <input type="checkbox" [checked]="headings_checked[i]" [attr.id]="'col--check__'+col.field+'__'+i" class="col--checkbox">
+                        {{col.header}}
+                    </label>
+                </li>
+            </ul>
+        </li>
+        <li class="main-menu-item">
+            <span (mouseover)="showSubMenu($event)">Filters</span>
+            <ul [ngClass]="'column-filter-submenu_'+col_num" (mouseout)="hideSubMenu($event)">
+                <li>
+                    <select>
+                        <option value="0">Not Equal</option>
+                        <option value="1">Equal</option>
+                    </select>
+                </li>
+            </ul>
+        </li>
+        
+        
     </ul>
 </div>

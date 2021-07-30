@@ -12,7 +12,7 @@ export class PaginatorComponent implements OnInit {
   @Input('rowsPerPage') rowCount: number;
   @Input('totalRecords') recordCount: number;
   pageSeries: number[];
-  private pc: number = 0;
+  private totalPages: number = 0;
   private curPageNum: number= 1;
   constructor() { }
 
@@ -25,22 +25,24 @@ export class PaginatorComponent implements OnInit {
   }
 
   ngOnChanges() {
-    this.pc = this.recordCount/this.rowCount;
-    this.pageSeries = Array.from({length: this.pc >=3 ? 3 : this.pc},(v,k)=>k+1);
+    this.totalPages = Math.ceil(this.recordCount/this.rowCount);
+    this.pageSeries = Array.from({length: this.totalPages >=3 ? 3 : this.totalPages},(v,k)=>k+1);
     console.log('pageSeries:', this.pageSeries, this.recordCount, this.rowCount);
   }
 
   pageNumberClick(e:any){
     let res: number = 1;
     if(e.target.parentNode.tagName !== 'P'){
-      if(e.target.className === 'prev-page--icon')
+      if(e.target.className.indexOf('prev') !== -1)
         res = this.curPageNum - 1;
-      res = this.curPageNum + 1;
+      else
+        res = this.curPageNum + 1;
     }
     else{
       res = +e.target.textContent;
     }
-    if(this.curPageNum === res) return;
+    if(this.curPageNum === res || res < 1 || res > this.totalPages) return;
+    
     this.curPageNum = res;
     this.pageChange.emit(this.curPageNum);
   }
