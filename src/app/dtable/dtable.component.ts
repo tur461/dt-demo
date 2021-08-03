@@ -1,9 +1,8 @@
-import { OnChanges, AfterViewInit, Input, ViewChild, Component, OnInit, Renderer2 as Renderer, ElementRef, Output } from '@angular/core';
+import { Input, ViewChild, Component, OnInit, ElementRef } from '@angular/core';
 
 import { AirlineService } from './services/airline.service';
 import { IAirline_str, IAirline_arr, IHeading, ISortEvent, ICopy } from './domain/airline.domain';
 import { Headings } from './constants/airline.constant';
-import * as $ from 'jquery';
 import { Workbook } from 'exceljs';
 import * as fs from 'file-saver';
 
@@ -14,23 +13,39 @@ import * as fs from 'file-saver';
 })
 export class DtableComponent implements OnInit {
   constructor(private airlineService: AirlineService) { }
+
+  @ViewChild('dt') dt: ElementRef=new ElementRef(null);
+
+  @Input('rowsPerPage') rows: number = 5;
+
+  @Input() title: string = 'Organisation';
+
+  private names: string[]=[];
   
-  @ViewChild('dt') dt: ElementRef;
-
-  @Input('rowsPerPage') rows: number;
-
-  private names: string[];
-  
-  title = "Organizations";
-  xl_extn = "xlsx";
-
   airlines = (<(IAirline_str & IAirline_arr)[]>[]);
   airlines_bkp = (<(IAirline_str & IAirline_arr)[]>[]);
   cur_slice = (<(IAirline_str & IAirline_arr)[]>[]);
 
-  cols: IHeading[] = Headings.filter(h => h.show);
-  headings_checked: boolean[] = Headings.map(_ => !0);
-  column_checks_headings: IHeading[] = Headings;
+  All_Headings: IHeading[] = this.clone(Headings);
+  cols: IHeading[] = this.All_Headings.filter(h => h.show);
+  column_checks_headings: IHeading[] = this.clone(Headings);
+
+  xportOpt = {
+    XL: 0,
+    CSV: 1,
+    csvDelim: ',',
+    xl_extn: 'xlsx',
+    csv_extn: 'csv',
+    fileName: 'airline_organizations',
+    getFilename: function(w:number) {
+      let ret = `${this.fileName}_${new Date().getTime()}`;
+      if(w == this.XL)
+        return `${ret}.${this.XL}`;
+      else if(w == this.CSV)
+        return `${ret}.${this.CSV}`;
+      throw new Error("unsupported functionality!");
+    }
+  };
 
   pagination = {
     total: 0,
@@ -41,14 +56,18 @@ export class DtableComponent implements OnInit {
     to: 0
    };
 
-  loading: boolean;
+  loading: boolean = false;
   
-
   ngOnInit() {
+    this.initDTable();
+  }
+
+  initDTable(){
     this.loading = !0;
     setTimeout(() => {
-      this.airlineService.getAirlines().then(airlines => { 
-        this.rows = this.rows + 1;
+      this.airlineService.getAirlines().then(airlines => {
+        let len = airlines.length; 
+        this.rows = this.rows > len ? len : this.rows;
         this.airlines_bkp = airlines;
         this.airlines = airlines.slice(0, this.rows);
         this.cur_slice = <(IAirline_str & IAirline_arr)[]> this.clone(this.airlines);
@@ -56,36 +75,22 @@ export class DtableComponent implements OnInit {
       });
       this.loading = !1;
       
-    }, 1000);
+    }, 10 );
   }
-
-  ngAfterViewInit() {
-    this.setupPerColumnSearching();
-  }
-
-  setupPerColumnSearching(){
-    // column search feature implemented here
-    $('input.table--filter-col_searchbox').on('keyup', (e: any) => {
-      if(!e.target.value){
-        this.airlines = this.cur_slice;
-      }
-
-      let colname = $(`.dtable--column_heading:nth-child(${e.target.id.split('_')[1]}) .dtable--column_heading_text`).html();
-
-      let val = e.target.value.toLocaleLowerCase();
-      this.airlines = this.airlines.filter(
-        a => {
-          let b = this.cols.filter(c => c.header === colname)[0].field, c = a[b];
-          if(this.isArray(c))
-            return c.find(cc => cc.toLocaleLowerCase().includes(val));
-          return `${c}`.toLocaleLowerCase().includes(val);
-        });
-    });
+  
+  handlePerColumnSearch(d:any){
+    if(!d.v) this.airlines = this.cur_slice;
+    this.airlines = this.airlines.filter(
+      airline => {
+        let c = airline[d.c_f];
+        if(this.isArray(c))
+          return c.find(cc => cc.toLocaleLowerCase().includes(d.v));
+        return `${c}`.toLocaleLowerCase().includes(d.v);
+      });
   }
 
   sortByColumn(e: ISortEvent){
-    console.log('sort event:', e);
-    let key = this.cols.filter(c => c.header == e.col_name)[0].field,
+    let key = this.cols.filter(c => c.header.trim() == e.col_name)[0].field,
         mul = e.sort_order == 'sort_desc' ? -1 : 1;
     console.log(key, mul);
     this.airlines = this.airlines.sort((a, b) => {
@@ -94,24 +99,19 @@ export class DtableComponent implements OnInit {
   }
 
   handleColCheck(e: any){
-    console.log('colCheckEvent:', e, 'cols:', this.cols);
-  
-    this.cols = this.cols.map(col => {
-      if(col.field === e.col_field)
-        return { ...col, show: e.show};
-      return col;
-    });
-    setTimeout(_ => {
-      console.log('after 5 sec, cols:', this.cols);
-    }, 5000);
+    console.log('column checkbox event: '+e.f, e.sh);
+    this.All_Headings[this.All_Headings.findIndex(h => h.field===e.f)].show = e.sh;    
+    this.cols = this.All_Headings.filter(h => h.show);
+    for(let el:HTMLInputElement, i=0, l=this.cols.length; i<l; ++i) {
+      el = document.getElementById(`col--check__${e.f}__${i}`) as HTMLInputElement;
+      el && (el.checked = e.sh); // hidden element would be null
+    }
   }
 
-  selectPage(pageNumber:number){
+  selectPage(pageNumber: number){
     console.log('page # selected:', pageNumber);
     // ensure in-range
-    pageNumber = pageNumber < 1 ? 
-    1 : pageNumber > this.pagination.total ? this.pagination.total : pageNumber;
-    
+    pageNumber = pageNumber < 1 ? 1 : pageNumber > this.pagination.total ? this.pagination.total : pageNumber;
     this.pagination.current_page = pageNumber;
     this.pagination.from = this.from();
     this.pagination.to = this.to();
@@ -120,34 +120,55 @@ export class DtableComponent implements OnInit {
     this.cur_slice = <(IAirline_str & IAirline_arr)[]> this.clone(this.airlines);
   }
 
+  changePageSize(size: number){
+    console.log(`page size change event: ${size}`);
+    this.rows = size;
+    this.initDTable();
+  }
+
   handleExport(w: string){
     console.log('export event:', w);
     w == 'excel' ? this.exportExcel() : this.exportCSV();
   }
 
   private exportExcel() {
-    let workbook = new Workbook();
-    let worksheet = workbook.addWorksheet(this.title);
+    let workbook = new Workbook(),
+        worksheet = workbook.addWorksheet(this.xportOpt.fileName);
     worksheet.columns = this.cols.map(c => {
       return {header: c.header, key: c.field};
     });
     this.airlines.forEach(a => {
-      let aa: IAirline_arr & IAirline_arr = {};
+      let aa: IAirline_arr = {};
       this.cols.forEach(c => aa[c.field] = a[c.field])
       worksheet.addRow(aa);
     });
-    workbook.xlsx.writeBuffer().then((data) => {
-      let blob = new Blob([data], { 
+    workbook.xlsx.writeBuffer().then((buf: BlobPart) => {
+      let blob = new Blob([buf], { 
         type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
       });
-      fs.saveAs(blob, `${this.title}.${this.xl_extn}`);
+      fs.saveAs(blob, this.xportOpt.getFilename(this.xportOpt.XL));
     });
   }
 
   private exportCSV() {
- 
-    let workbook = new Workbook();
-   
+    const workbook = new Workbook(),
+          worksheet = workbook.addWorksheet(this.xportOpt.fileName);
+    worksheet.columns = this.cols.map(c => {
+      return {header: c.header, key: c.field};
+    });
+    this.airlines.forEach(a => {
+      let aa: IAirline_arr = {};
+      this.cols.forEach(c => aa[c.field] = a[c.field])
+      worksheet.addRow(aa);
+    });
+    workbook.csv.writeBuffer({ formatterOptions: { delimiter: this.xportOpt.csvDelim } })
+    .then((buf: BlobPart) => {
+      let blob = new Blob([buf], { 
+        type: 'application/octet-stream'
+      });
+      fs.saveAs(blob, this.xportOpt.getFilename(this.xportOpt.CSV));
+    })
+    .catch();   
   }
 
   private lastPage(){
@@ -192,33 +213,23 @@ export class DtableComponent implements OnInit {
   }
   
   clone(obj:any) {
-    var copy: ICopy;
-
+    let c: ICopy;
     if (null == obj || "object" != typeof obj) return obj;
-
     if (obj instanceof Date) {
-        copy = new Date();
-        copy.setTime(obj.getTime());
-        return copy;
+        c = new Date();
+        c.setTime(obj.getTime());
+        return c;
     }
-
     if (obj instanceof Array) {
-        copy = [];
-        for (var i = 0, len = obj.length; i < len; i++) {
-            copy[i] = this.clone(obj[i]);
-        }
-        return copy;
+        c = [];
+        for (let i=0, l=obj.length; i < l; ++i) c[i] = this.clone(obj[i]);
+        return c;
     }
-
     if (obj instanceof Object) {
-        copy = {};
-        for (var attr in obj) {
-            if (obj.hasOwnProperty(attr)) copy[attr] = this.clone(obj[attr]);
-        }
-        return copy;
+        c = {};
+        for (let k in obj) if (obj.hasOwnProperty(k)) c[k] = this.clone(obj[k]);
+        return c;
     }
-
-    throw new Error("Unable to copy obj! Its type isn't supported.");
-}
-
+    throw new Error("Unable to c obj! Its type isn't supported.");
+  }
 }

@@ -3,27 +3,45 @@
         <ng-content></ng-content>
     </span>
     <i #sortIcon class="dtable--column_sort_icon" (click)="sort($event)"></i>
-    <span [attr.id]="'dchm_'+col_num" class="dtable--column_heading_menu" (click)="toggleMenu($event)" ></span>
+    <span
+        class="dtable--column_heading_menu"  
+        [attr.id]="'dchm_'+col_num" 
+        (click)="toggleMenu($event)" >
+    </span>
     <ul [ngClass]="'column-menu_'+col_num" class="column-menu--main">
-        <li [ngClass]="'main-menu-item main-menu-item_'+col_num">
-            <span (mouseover)="showSubMenu($event)">Column</span>
-            <ul [ngClass]="'column-check-submenu_'+col_num" (mouseout)="hideSubMenu($event)">
-                <li>
-                    <input type="text" [ngClass]="'search-check-column_'+col_num" placeholder="search">
+        <li [ngClass]="'main-menu-item_'+col_num" class="main-menu-item">
+            <span (mouseover)="showSubMenu($event)" class="main-menu-item--span">Column</span>
+            <ul 
+                class="column-check-list" 
+                [ngClass]="'column-check-submenu_'+col_num" 
+                (mouseout)="hideSubMenu($event)">
+                <li class="searchCol column-check-list--searchcol">
+                    <app-col-search 
+                        [height]="'42px'" 
+                        (searchEvent)="handleColNameSearch($event)">
+                    </app-col-search>
                 </li>
-                <li *ngFor="let col of cols; let i=index">
-                    <label [attr.for]="'col--check_'+col.field+'_'+i">
-                        <input type="checkbox" [checked]="headings_checked[i]" [attr.id]="'col--check__'+col.field+'__'+i" class="col--checkbox">
+                <li *ngFor="let col of cols; let i=index" class="column-check-list--checkbox-item">
+                    <label [attr.for]="'col--check__'+col.field+'__'+col_num" class="column-check-list--checkbox-label">
+                        <input 
+                            type="checkbox"
+                            class="col--checkbox column-check-list--checkbox" 
+                            [checked]="headings_checked[i]" 
+                            [attr.id]="'col--check__'+col.field+'__'+col_num" 
+                            (change)="handleColumnSwitching($event)">
                         {{col.header}}
                     </label>
                 </li>
             </ul>
         </li>
-        <li class="main-menu-item">
-            <span (mouseover)="showSubMenu($event)">Filters</span>
-            <ul [ngClass]="'column-filter-submenu_'+col_num" (mouseout)="hideSubMenu($event)">
-                <li>
-                    <select>
+        <li [ngClass]="'main-menu-item main-menu-item_'+col_num" class="">
+            <span (mouseover)="showSubMenu($event)" class="main-menu-item--span">Filters</span>
+            <ul 
+                class="column-conditional-filter--menu" 
+                [ngClass]="'column-filter-submenu_'+col_num" 
+                (mouseout)="hideSubMenu($event)">
+                <li class="column-conditional-filter--menu-item">
+                    <select class="form-control">
                         <option value="0">Not Equal</option>
                         <option value="1">Equal</option>
                     </select>

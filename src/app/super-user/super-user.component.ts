@@ -8,13 +8,13 @@ import * as $ from 'jquery';
   styleUrls: ['./super-user.component.css']
 })
 export class SuperUserComponent implements OnInit {
-  @ViewChild('abrv') abrv: ElementRef;
-  @ViewChild('name') name: ElementRef;
-  @ViewChild('count') count: ElementRef;
+  @ViewChild('abrv') abrv: ElementRef=new ElementRef(null);
+  @ViewChild('name') name: ElementRef=new ElementRef(null);
+  @ViewChild('count') count: ElementRef=new ElementRef(null);
 
-  @Input('abrv') _abrv: string;
-  @Input('name') _name: string;
-  @Input('count') _count: string;
+  @Input('abrv') _abrv: string='';
+  @Input('name') _name: string='';
+  @Input('count') _count: string='';
 
   @Input('names') names: string[] = [];
   constructor() { }

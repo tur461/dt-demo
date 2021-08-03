@@ -17,5 +17,4 @@ export class TableTopbarComponent implements OnInit {
   exportEvent(w: string){
     this.export.emit(w);
   }
-
 }

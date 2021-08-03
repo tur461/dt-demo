@@ -1,18 +1,27 @@
-<table class="dtable">
+<table class="dtable table">
     <thead class="dtable--heading">
-    <tr>
-        <th [attr.colspan]="cols.length">
+    <tr class="table-header">
+        <th [attr.colspan]="cols.length" style="padding-bottom: 25px;">
             <app-table-topbar (export)="handleExport($event)">{{title}}</app-table-topbar>
         </th>
     </tr>
     <tr>
         <th class="dtable--column_heading" *ngFor="let col of cols; let i=index">
-            <app-col-head [cols]="column_checks_headings" [index]="i+1" (sortEvent)="sortByColumn($event)" (colCheckEvent)="handleColCheck($event)">{{col.header}}</app-col-head>
+            <app-col-head 
+                [col_num]="i+1" 
+                [cols]="column_checks_headings" 
+                (sortEvent)="sortByColumn($event)" 
+                (colCheckEvent)="handleColCheck($event)">{{col.header}}
+            </app-col-head>
         </th>   
     </tr>
     <tr class="dtable--heading">
         <th *ngFor="let col of cols; let i=index">
-            <app-col-search [index]="i+1"></app-col-search>
+            <app-col-search 
+                [col_num]="i+1" 
+                [col_field]="col.field" 
+                (searchEvent)="handlePerColumnSearch($event)">
+            </app-col-search>
         </th>
     </tr>
     </thead>
@@ -28,15 +37,21 @@
                     ></app-super-user>
                 </ng-container>
                 <ng-template #other>
-                    {{airline[col.field]}}
+                    <span [ngClass]="{'decorateContent': col.decorate}">{{airline[col.field]}}</span>
                 </ng-template>
             </td>
         </tr>
     </tbody>
-    <tfoot>
+    <tfoot class="table-footer">
         <tr>
-            <th [attr.colspan]="cols.length" class="table--pagination">
-                <app-paginator (pageChange)="selectPage($event)" [ngClass]="'flex-end'" [rowsPerPage]="rows" [totalRecords]="airlines_bkp.length"></app-paginator>
+            <th class="table--pagination" [attr.colspan]="cols.length">
+                <app-paginator
+                    [ngClass]="'flex-end'" 
+                    [rowsPerPage]="rows" 
+                    [totalRecords]="airlines_bkp.length"
+                    (pageSizeChange)="changePageSize($event)" 
+                    (pageChange)="selectPage($event)">
+                </app-paginator>
             </th>
         </tr>
     </tfoot>

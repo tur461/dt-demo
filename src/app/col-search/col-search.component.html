@@ -1,1 +1,10 @@
-<input #searchbox type="text" placeholder="search" class="table--filter-col_searchbox">
+<div class="searchdiv">
+    <input 
+        #searchbox 
+        type="search" 
+        placeholder="Search" 
+        class="table--filter-col_searchbox form-control" 
+        [ngStyle]="{'height': height}"
+        (keyup)="handleKeyup($event)">
+    <img src="./assets/icons/SearchIcon.svg" alt="">
+</div>

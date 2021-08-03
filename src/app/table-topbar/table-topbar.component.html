@@ -1,9 +1,7 @@
 <div>
-    <span>
-        <ng-content></ng-content>
-    </span>    
+    <h1><ng-content></ng-content></h1>
     <p>
-        <span class="export-excel--icon" (click)="exportEvent('excel')"></span>
-        <span class="export-csv--icon" (click)="exportEvent('csv')"></span>
+        <span class="mr-10"><img src="./assets/icons/ExcelIcon.svg" (click)="exportEvent('excel')" alt="excel"></span>
+        <span><img src="./assets/icons/CSVIcon.svg" (click)="exportEvent('csv')" alt="csv"></span>
     </p>
 </div>

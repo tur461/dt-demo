@@ -5,11 +5,12 @@ import { IAirline_str, IAirline_arr } from '../domain/airline.domain';
 
 @Injectable()
 export class AirlineService {
-    airlines: (IAirline_str &  IAirline_arr)[];
+    airlines: (IAirline_str &  IAirline_arr)[]=[];
     constructor(private http: HttpClient) {}
 
     getAirlines() {
-        return this.http.get('../assets/data/data.json')
+        console.log('here');
+        return this.http.get('../../../assets/data/data.json')
                     .toPromise()
                     .then(res => res)
                     .then(data => (<(IAirline_str & IAirline_arr)[]>data));

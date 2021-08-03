@@ -1,6 +1,6 @@
 div {
     display: flex;
-    margin-right: 12rem;
+    margin-top: 12px;
 }
 
 div > span{
@@ -23,18 +23,45 @@ div span.next-page--icon:hover {
     opacity: 1;
 }
 
-div p span{
+div p span.pageSelection{
     padding-left: .8rem;
     padding-right: .8rem;
     padding-top: .4rem;
     padding-bottom: .4rem;
+    line-height: 20px;
+    font-size: 18px;
+    margin-left: 6px;
+    margin-right: 6px;
+    font-weight: normal;
     cursor: pointer;
-    margin-left: .2rem;
     color: #c2c2c2;
+}
+
+div p span.pageSelection.active{
+    padding-left: .8rem;
+    padding-right: .8rem;
+    padding-top: .4rem;
+    padding-bottom: .4rem;
+    line-height: 20px;
+    cursor: pointer;
+    font-weight: 400;
+    color: white;
+    border-radius: 4px;
+    background-color: #6270FC;
 }
 
 div select{
     margin-left: 1rem;
-    width: 3.2rem;
-    height: 1.6rem;
+    width: 80px;
+    height: 45px;
+    font-size: 15px;
+    color: #999999;
+}
+
+.recordCounts {
+    font-size: 15px;
+    color: #999999;
+    line-height: 22px;
+    padding: 10px 0px 10px 24px;
+    font-weight: normal;
 }

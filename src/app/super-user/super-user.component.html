@@ -1,12 +1,12 @@
 <div class="super-users--container">
     
-    <span #abrv></span>
-    <span #name></span>
-    <span #count></span>
+    <span #abrv class="tags tags-green"></span>
+    <span #name class="superUsersTitle"></span>
+    <span #count class="tags tags-blue"></span>
     
     <ul class="super-users--other">
         <li *ngFor="let name of names">
-            <span>{{getAbrv(name)}}</span><span>{{name}}</span>
+            <span class="tags tags-green">{{getAbrv(name)}}</span><span class="superUsersTitle">{{name}}</span>
         </li>
     </ul>
 </div>

@@ -1,6 +1,8 @@
 ul li{
     list-style: none;
     background-color: #fff;
+    font-size: 15px;
+    font-weight: 400;
 }
 
 .show{
@@ -14,35 +16,34 @@ div{
 
 div span.dtable--column_heading_text{
     display:inline-block;
-    width: 128px;
+    width: 100%;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+    color:#666; line-height: 1.4;font-weight: 500;
+    text-transform: capitalize;
+}
+
+div i.dtable--column_sort_icon, .sort_asc, .sort_desc   {
+    cursor: pointer;
+    opacity: .2;
+    width: 1.3rem;
+    margin-right: 5px;
+    background-repeat: no-repeat;
+    background-size: 12px;
+    margin-top: 4px;
 }
 
 div i.dtable--column_sort_icon {
-    cursor: pointer;
-    opacity: .2;
-    width: 1rem;
     background-image: url(../icons/arrow-down-up.svg);
-    background-repeat: no-repeat;
 }
 
-
 .sort_asc {
-    cursor: pointer;
-    opacity: .2;
-    width: 1rem;
     background-image: url(../icons/arrow-up.svg);
-    background-repeat: no-repeat;
 }
 
 .sort_desc {
-    cursor: pointer;
-    opacity: .2;
-    width: 1rem;
-    background-image: url(../icons/arrow-down.svg) !important;
-    background-repeat: no-repeat;
+    background-image: url(../icons/arrow-down.svg);
 }
 
 div i.dtable--column_sort_icon:hover,
@@ -71,6 +72,8 @@ a{
 div.div--column-menu,
 div.div--column-menu > ul > li{
     position: relative;
+    padding-top: 10px;
+    padding-bottom: 10px;
 }
 
 div.div--column-menu > ul,
@@ -79,10 +82,16 @@ div.div--column-menu > ul > li > ul{
     position: absolute;
     z-index: 60;
     background: #fff;
+    border: 1px solid #E6E6E6;
+    width: 286px;
+    background: #fff;
+    padding-left: 10px !important;
+    box-shadow: 0px 4px 8px #e6e6e6;
+    padding-right: 10px !important;
 }
 
 ul.column-menu--main{
-    top: 1rem;
+    top: 3rem;
 }
 
 li.main-menu-item,
@@ -95,10 +104,15 @@ li.main-menu-item::after,
 li.main-menu-item::before {
     opacity: .7;
     content: "";
-    width: 80px;
-    height: 80px;
+    width: 20px;
+    height: 20px;
     background-repeat: no-repeat;
-    background-size: 75% 40%;
+    background-size: 100%;
+}
+
+li.main-menu-item span {
+    text-transform: capitalize;
+    color: #000;
 }
 
 li.main-menu-item.angle_on-before::before{
@@ -107,4 +121,35 @@ li.main-menu-item.angle_on-before::before{
 
 li.main-menu-item.angle_on-after::after{
     background-image: url(../icons/angle-right.svg) !important;
+    float: right;
+}
+
+
+.table thead th{box-shadow: 0 !important; border:0 !important; }
+span.dtable--column_heading_menu{
+    margin-top: 2px;
+}
+
+ul.column-check-list{
+    min-height: 330px;
+    /* right: -285px;*/
+} 
+
+.table thead tr th:last-child ul.column-check-list,
+.table thead tr th:nth-last-child(2) ul.column-check-list{
+    /*right: auto;
+     left: -285px; */
+}
+
+ul.column-check-list li {
+    padding-top: 9px;
+    padding-bottom: 9px;
+}
+
+li.searchCol {
+    padding-top: 12px !important;
+}
+
+app-col-search .searchdiv .input[type="search"]{
+    min-height: 48px !important;
 }

@@ -19,14 +19,28 @@ div p > span {
 }
 
 div p span.export-excel--icon{
-    background-image: url(../icons/excel-export.svg);
+    /* background-image: url('./assets/icons/C.svg'); */
 }
 
 div p span.export-csv--icon{
-    background-image: url(../icons/csv-export.svg);
+    /* background-image: url('./assets/icons/Vector.svg'); */
 }
 
 div p span.export-excel--icon:hover,
 div p span.export-csv--icon:hover{
     opacity: 1;
+}
+
+/* New */
+.table{font-size: 14px;}
+h1{
+    font-size: 24px; 
+    line-height: 1; 
+    color: #333; 
+    text-transform: capitalize;
+    font-weight: 700;
+}
+
+.mr-10 {
+    margin-right: 10px !important;
 }

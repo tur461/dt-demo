@@ -1,4 +1,4 @@
-import { Component, Input, OnInit, ElementRef, ViewChild } from '@angular/core';
+import { Component, Input, Output, OnInit, ElementRef, ViewChild, EventEmitter } from '@angular/core';
 
 @Component({
   selector: 'app-col-search',
@@ -7,16 +7,27 @@ import { Component, Input, OnInit, ElementRef, ViewChild } from '@angular/core';
 })
 export class ColSearchComponent implements OnInit {
 
-  @Input('index') index: number;
+  @Input('col_num') col_num: number=0;
+  @Input('col_field') col_field: string='';
 
-  @ViewChild('searchbox') searchbox: ElementRef
+  @Output() searchEvent: EventEmitter<any> = new EventEmitter();
+  
+  @ViewChild('searchbox') searchbox: ElementRef = new ElementRef(null);
   constructor() { }
+
+  @Input()
+  height: any = '32px';
 
   ngOnInit(): void {
   }
 
   ngAfterViewInit() {
-    this.searchbox.nativeElement.id = `search_${this.index}`;
+    this.searchbox.nativeElement.id = `search_${this.col_num}`;
+  }
+
+  handleKeyup(e:any){
+    this.searchEvent.emit({v: e.target.value.toLocaleLowerCase(), c_f:this.col_field});
   }
 
 }
+

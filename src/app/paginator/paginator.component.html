@@ -1,12 +1,31 @@
 <div>
-    <span class="prev-page--icon" (click)="pageNumberClick($event)"></span>
-    <p>
-        <span *ngFor="let pageNum of pageSeries" (click)="pageNumberClick($event)">{{pageNum}}</span>
-    </p>
-    <span class="next-page--icon" (click)="pageNumberClick($event)"></span>
-    <select >
-        <option value="0">10</option>
-        <option value="1">20</option>
-        <option value="2">30</option>
+    <div>
+        <span class="prev-page--icon" (click)="pageNumberClick($event)"></span>
+        <p>
+            <!-- <span class="pageSelection" *ngFor="let pageNum of pageSeries" (click)="pageNumberClick($event)">{{pageNum}}</span> -->
+            <span class="pageSelection active" (click)="pageNumberClick($event)">1</span>
+            <span class="pageSelection" (click)="pageNumberClick($event)">2</span>
+            <span class="pageSelection" (click)="pageNumberClick($event)">3</span>
+        </p>
+        <span class="next-page--icon" (click)="pageNumberClick($event)"></span>
+    </div>
+    <select class="form-control page-size--selector" (change)="handlePageSizeChange($event)">
+        <option value="5" selected>5</option>
+        <option value="10">10</option>
+        <option value="15">15</option>
+        <option value="20">20</option>
+        <option value="25">25</option>
+        <option value="30">30</option>
+        <option value="35">35</option>
+        <option value="40">40</option>
+        <option value="45">45</option>
+        <option value="50">50</option>
     </select>
+
+    <p class="recordCounts">
+        Results
+        <span id="shownRecordCountText"></span>
+        of
+        <span id="totalRecordCountText"></span>
+    </p>
 </div>
