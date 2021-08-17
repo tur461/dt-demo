@@ -40,9 +40,9 @@ export class DtableComponent implements OnInit {
     getFilename: function(w:number) {
       let ret = `${this.fileName}_${new Date().getTime()}`;
       if(w == this.XL)
-        return `${ret}.${this.XL}`;
+        return `${ret}.${this.xl_extn}`;
       else if(w == this.CSV)
-        return `${ret}.${this.CSV}`;
+        return `${ret}.${this.csv_extn}`;
       throw new Error("unsupported functionality!");
     }
   };
